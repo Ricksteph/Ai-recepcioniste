@@ -1,0 +1,71 @@
+version: "3.9"
+
+# AI Receptionist — stack complète (cahier des charges §21)
+#   docker compose up --build
+# Puis :
+#   docker compose exec backend python seed.py        # données de démo
+#   http://localhost:3000                             # dashboard
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: receptionist
+      POSTGRES_PASSWORD: receptionist
+      POSTGRES_DB: receptionist
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U receptionist"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+asyncpg://receptionist:receptionist@db:5432/receptionist
+      JWT_SECRET: ${JWT_SECRET:?définissez JWT_SECRET dans .env}
+      LLM_PROVIDER: ${LLM_PROVIDER:-auto}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-google/gemma-4-31b-it:free}
+      NVIDIA_MODEL: ${NVIDIA_MODEL:-mistralai/mistral-large-2-instruct}
+      OLLAMA_HOST: ${OLLAMA_HOST:-}
+      LLM_FALLBACK_CHAIN: ${LLM_FALLBACK_CHAIN:-}
+      LLM_COOLDOWN_SECONDS: ${LLM_COOLDOWN_SECONDS:-120}
+      LLM_COOLDOWN_MAX_SECONDS: ${LLM_COOLDOWN_MAX_SECONDS:-3600}
+      EMBEDDINGS_PROVIDER: ${EMBEDDINGS_PROVIDER:-auto}
+      SMTP_URL: ${SMTP_URL:-}
+      CORS_ORIGINS: http://localhost:3000
+      ENVIRONMENT: production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 2
+
+  frontend:
+    build: ./frontend
+    environment:
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

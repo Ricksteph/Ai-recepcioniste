@@ -1,0 +1,22 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+backend/*.db
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/.next/
+frontend/next-env.d.ts
+frontend/npm-install.log
+
+# Secrets & env
+.env
+.env.local
+backend/.env
+
+# Divers
+*.log
+.DS_Store
+frontend/tsconfig.tsbuildinfo
