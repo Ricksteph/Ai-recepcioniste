@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # NVIDIA NIM — OpenAI-compatible, gratuit (~40 req/min) : https://build.nvidia.com
     nvidia_api_key: str = ""
     nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
-    nvidia_model: str = "mistralai/mistral-large-2-instruct"
+    nvidia_model: str = "z-ai/glm-5.3-flash"
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "llama3.1"
 

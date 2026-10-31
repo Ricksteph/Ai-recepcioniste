@@ -40,7 +40,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
       OPENROUTER_MODEL: ${OPENROUTER_MODEL:-google/gemma-4-31b-it:free}
-      NVIDIA_MODEL: ${NVIDIA_MODEL:-mistralai/mistral-large-2-instruct}
+      NVIDIA_MODEL: ${NVIDIA_MODEL:-z-ai/glm-5.3-flash}
       OLLAMA_HOST: ${OLLAMA_HOST:-}
       LLM_FALLBACK_CHAIN: ${LLM_FALLBACK_CHAIN:-}
       LLM_COOLDOWN_SECONDS: ${LLM_COOLDOWN_SECONDS:-120}
