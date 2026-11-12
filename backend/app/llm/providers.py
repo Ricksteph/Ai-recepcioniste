@@ -68,7 +68,7 @@ class OpenAICompatProvider(ChatProvider):
             headers["Authorization"] = f"Bearer {self.api_key}"
         url = f"{self.base_url}/chat/completions"
         try:
-            async with httpx.AsyncClient(timeout=60) as client:
+            async with httpx.AsyncClient(timeout=settings.llm_timeout_seconds) as client:
                 resp = await client.post(url, json=payload, headers=headers)
                 if resp.status_code == 429:
                     raise RateLimitError(f"{self.name}: quota dépassé (429)")

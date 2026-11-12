@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     # NVIDIA NIM — OpenAI-compatible, gratuit (~40 req/min) : https://build.nvidia.com
     nvidia_api_key: str = ""
     nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
-    nvidia_model: str = "z-ai/glm-5.3-flash"
+    nvidia_model: str = "minimaxai/minimax-m3.1-flash"
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "llama3.1"
 
@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     llm_fallback_chain: str = ""
     llm_cooldown_seconds: float = 120.0       # 1er cooldown après 429 (double ensuite)
     llm_cooldown_max_seconds: float = 3600.0  # plafond d'escalade du cooldown
+    # Délai max par appel LLM : un modèle trop lent est écarté vite pour que la
+    # chaîne bascule avant que le client (proxy web) ne coupe la requête.
+    llm_timeout_seconds: float = 25.0
 
     # Embeddings: auto | openai | ollama | local
     embeddings_provider: str = "auto"
