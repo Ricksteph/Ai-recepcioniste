@@ -49,7 +49,10 @@ class Settings(BaseSettings):
     llm_cooldown_max_seconds: float = 3600.0  # plafond d'escalade du cooldown
     # Délai max par appel LLM : un modèle trop lent est écarté vite pour que la
     # chaîne bascule avant que le client (proxy web) ne coupe la requête.
-    llm_timeout_seconds: float = 25.0
+    llm_timeout_seconds: float = 10.0
+    # Budget total de la chaîne : au-delà, on répond avec la policy locale
+    # plutôt que de laisser le visiteur attendre (le proxy web coupe à 60 s).
+    llm_deadline_seconds: float = 35.0
 
     # Embeddings: auto | openai | ollama | local
     embeddings_provider: str = "auto"

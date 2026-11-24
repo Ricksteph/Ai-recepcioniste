@@ -322,7 +322,12 @@ class FallbackChatProvider(ChatProvider):
         if not available:
             raise ProviderError("tous les modèles de la chaîne sont en cooldown — policy locale")
         last_error: ProviderError | None = None
+        deadline = now + settings.llm_deadline_seconds
         for provider in available:
+            if self._now() >= deadline:
+                logger.warning("Chaîne LLM : budget de %ss épuisé — policy locale",
+                               int(settings.llm_deadline_seconds))
+                break
             key = _label(provider)
             try:
                 out = await provider.chat(
